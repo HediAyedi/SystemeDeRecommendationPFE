@@ -17,6 +17,9 @@ mydb = mysql.connector.connect(
   database="kamjobs"
 )
 
+nltk.download('punkt')
+
+
 mycursor = mydb.cursor()
 
 
@@ -31,7 +34,7 @@ stop=set(stopwords.words())
 
 stop = list(stop)
 
-stop.extend([".",";","!",",",":"])
+stop.extend([".",";","!",",",":","-","_","”","’","”","“","’","/"])
 
 stemmer = EnglishStemmer()
 
@@ -52,10 +55,41 @@ for x in myresult:
   category=x[5]
   exigence=x[6]
   description= descrip+ ":" +category + ":" +exigence
-  print('\n')
-  print(description)
+  #print('\n')
+  #print(description)
   mots = nltk.word_tokenize(description)
+  #
   #print(mots)
   
   
+  #suppr stopwords
+  Mots=[m for m in mots if m not in stop ]
+ # print(Mots)
+   
+  #stemming
+   #stemming
   
+  MotsStem=[]
+  for i in Mots :
+      MotsStem.append(stemmer.stem(i))
+  #print("----------------------")
+  #print( MotsStem)
+  #print("ID Offre :",x[0])
+  NBProduit+=1
+  
+  
+
+#Sauvegarder les Mots uniques dans MotsUniques
+  for m in MotsStem :
+      MotsUniques.add(m)
+      DictMots[x[0]]=MotsStem
+        
+
+print("Produits sauvegarder :")
+print(MotsUniques)
+NBMots=len(MotsUniques)
+
+print("Nombre de Mots sans redondance:",NBMots)#j
+print("Nombre du produit :",NBProduit)#i
+
+
